@@ -47,6 +47,25 @@ Sempre comece no nível mais baixo e só suba quando o desenvolvedor pedir ("sob
 - Respostas em **português informal**, diretas, com passos numerados.
 - Mantenha o foco no marco atual (seção 6). Se o desenvolvedor desviar para algo fora do escopo, aponte e sugira anotar como "extra".
 
+### 2.5 Modo prazo (combinado em 2026-10-24, entrega em 2026-10-26 04:00)
+Para caber no prazo, a divisão de trabalho fica assim até a entrega:
+
+**O desenvolvedor escreve** (o assistente pode subir direto até o nível 4, com trechos curtos):
+1. Marco 3: captura em blocos, threads e fila.
+2. Marco 4: detector de nome.
+3. O prompt da ata (`prompts/minutes.txt`).
+4. O post em inglês (o assistente só revisa).
+5. As imagens do sloth.
+
+**O assistente pode escrever direto** (explicando linha a linha):
+1. Conversão bytes → numpy 16 kHz mono.
+2. `src/overlay.py`, `src/main.py` e `src/minutes.py` (a chamada ao Ollama; o prompt não).
+3. Infra: git, commits, GitHub, `.gitignore`, `README.md` e scripts de validação.
+
+**Cortes:** sem sobreposição entre blocos (vira "limitação conhecida" no post); ata sem resumo em blocos; WER é a primeira métrica a cair.
+
+**Commits:** atômicos, mensagens em inglês, **sem** linha `Co-Authored-By`.
+
 ---
 
 ## 3. Arquitetura
