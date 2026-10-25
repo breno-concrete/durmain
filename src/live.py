@@ -1,10 +1,12 @@
 import queue
 import threading
 import time
+from collections import deque
 
 import pyaudiowpatch as pyaudio
 from audio_convert import to_whisper_format
 from faster_whisper import WhisperModel
+from name_detector import menciona_nome
 
 CHUNK = 1024
 data_format = pyaudio.paInt16
@@ -38,6 +40,8 @@ def eh_alucinacao(segment):
 
 
 def transcrever(rate, channels):
+    # últimas frases ditas, mostradas como contexto quando o nome aparece
+    contexto = deque(maxlen=3)
     while True:
         fechou_em, audio = fila.get()
         audio_whisper = to_whisper_format(audio, rate, channels)
@@ -45,6 +49,11 @@ def transcrever(rate, channels):
         for segment in segments:
             if not eh_alucinacao(segment):
                 print(segment.text)
+
+                contexto.append(segment.text)
+                if menciona_nome(segment.text):
+                    print("Mencionaram seu nome!!!")
+                    print(" ".join(contexto))
 
         # pior caso: fala no início do bloco esperou os 5 s do bloco + o processamento
         processamento = time.perf_counter() - fechou_em
