@@ -2,3 +2,4 @@
 output/
 *.wav
 __pycache__/
+assets/v1/
