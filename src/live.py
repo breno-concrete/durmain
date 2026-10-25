@@ -8,6 +8,7 @@ from pathlib import Path
 import pyaudiowpatch as pyaudio
 from audio_convert import to_whisper_format
 from faster_whisper import WhisperModel
+from minutes import gerar_ata
 from name_detector import menciona_nome
 
 CHUNK = 1024
@@ -103,3 +104,10 @@ with pyaudio.PyAudio() as p:
         print("encerrando...")
     finally:
         stream.stop_stream(); stream.close()
+
+# o LLM só roda depois que a captura parou, nunca junto com a transcrição
+if caminho_transcript.stat().st_size > 0:
+    print("gerando a ata...")
+    gerar_ata(caminho_transcript)
+else:
+    print("transcript vazio, sem ata")
