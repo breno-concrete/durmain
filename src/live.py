@@ -2,6 +2,8 @@ import queue
 import threading
 import time
 from collections import deque
+import os
+from datetime import datetime
 
 import pyaudiowpatch as pyaudio
 from audio_convert import to_whisper_format
@@ -42,6 +44,9 @@ def eh_alucinacao(segment):
 def transcrever(rate, channels):
     # últimas frases ditas, mostradas como contexto quando o nome aparece
     contexto = deque(maxlen=3)
+    # fica aberto a sessão toda; sem close() porque a thread daemon morre no Ctrl+C,
+    # por isso o flush() a cada frase
+    arquivo = open(caminho_transcript, "a", encoding="utf-8")
     while True:
         fechou_em, audio = fila.get()
         audio_whisper = to_whisper_format(audio, rate, channels)
@@ -49,6 +54,9 @@ def transcrever(rate, channels):
         for segment in segments:
             if not eh_alucinacao(segment):
                 print(segment.text)
+
+                arquivo.write(segment.text.strip() + "\n")
+                arquivo.flush()
 
                 contexto.append(segment.text)
                 if menciona_nome(segment.text):
@@ -59,6 +67,10 @@ def transcrever(rate, channels):
         processamento = time.perf_counter() - fechou_em
         print(f"   [processou em {processamento:.2f} s | atraso máx {5 + processamento:.2f} s | fila {fila.qsize()}]")
 
+
+os.makedirs("output", exist_ok=True)
+carimbo = datetime.now().strftime("%Y-%m-%d-%H%M")
+caminho_transcript = "output/transcript-" + carimbo + ".txt"
 
 model = WhisperModel(model_size, device="cpu", compute_type="int8")
 
