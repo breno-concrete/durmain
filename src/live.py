@@ -45,7 +45,7 @@ def transcrever(rate, channels):
     while True:
         fechou_em, audio = fila.get()
         audio_whisper = to_whisper_format(audio, rate, channels)
-        segments, info = model.transcribe(audio_whisper, language="pt", vad_filter=True)
+        segments, info = model.transcribe(audio_whisper, language="pt", vad_filter=True, hotwords="Breno")
         for segment in segments:
             if not eh_alucinacao(segment):
                 print(segment.text)
