@@ -2,8 +2,8 @@ import queue
 import threading
 import time
 from collections import deque
-import os
 from datetime import datetime
+from pathlib import Path
 
 import pyaudiowpatch as pyaudio
 from audio_convert import to_whisper_format
@@ -68,9 +68,11 @@ def transcrever(rate, channels):
         print(f"   [processou em {processamento:.2f} s | atraso máx {5 + processamento:.2f} s | fila {fila.qsize()}]")
 
 
-os.makedirs("output", exist_ok=True)
+# output/ da raiz do projeto, para funcionar rodando de qualquer pasta
+pasta_saida = Path(__file__).resolve().parent.parent / "output"
+pasta_saida.mkdir(exist_ok=True)
 carimbo = datetime.now().strftime("%Y-%m-%d-%H%M")
-caminho_transcript = "output/transcript-" + carimbo + ".txt"
+caminho_transcript = pasta_saida / f"transcript-{carimbo}.txt"
 
 model = WhisperModel(model_size, device="cpu", compute_type="int8")
 
