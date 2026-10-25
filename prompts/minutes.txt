@@ -12,7 +12,8 @@ O transcript abaixo foi gerado automaticamente por reconhecimento de voz:
 - não indica quem está falando;
 - a pontuação pode estar errada;
 - algumas palavras podem ter sido transcritas errado (ex.: "depósito" no lugar de "deploy").
-O usuário se chama Breno. Ele está ouvindo, mas não sabemos se fala no transcript.
+O usuário se chama Breno. Ele só OUVE: o transcript contém apenas a voz das outras pessoas.
+Nenhuma fala do transcript é do Breno. Nunca escreva que o Breno disse, compartilhou ou mencionou algo.
 </input>
 
 <rules>
@@ -25,7 +26,7 @@ O usuário se chama Breno. Ele está ouvindo, mas não sabemos se fala no transc
 - Só indique um responsável se ele foi nomeado no trecho. Caso contrário, escreva "não informado".
 - O Resumo é obrigatório e sempre descreve o que foi falado, mesmo que a conversa seja informal.
 - Nas outras seções, quando não houver nada, escreva apenas "Nenhuma".
-- O email alternativo é sempre escrito: um email curto com o conteúdo essencial do transcript.
+- O email alternativo é sempre escrito: um email curto, endereçado ao Breno, com o conteúdo essencial do transcript.
 - Nas citações, corrija no máximo ortografia e concordância; não mude o sentido.
 </rules>
 
