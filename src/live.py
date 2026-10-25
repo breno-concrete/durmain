@@ -10,6 +10,7 @@ from audio_convert import to_whisper_format
 from faster_whisper import WhisperModel
 from minutes import gerar_ata
 from name_detector import menciona_nome
+from overlay import Overlay
 
 CHUNK = 1024
 data_format = pyaudio.paInt16
@@ -63,6 +64,7 @@ def transcrever(rate, channels):
                 if menciona_nome(segment.text):
                     print("Mencionaram seu nome!!!")
                     print(" ".join(contexto))
+                    overlay.acordar()
 
         # pior caso: fala no início do bloco esperou os 5 s do bloco + o processamento
         processamento = time.perf_counter() - fechou_em
@@ -76,6 +78,8 @@ carimbo = datetime.now().strftime("%Y-%m-%d-%H%M")
 caminho_transcript = pasta_saida / f"transcript-{carimbo}.txt"
 
 model = WhisperModel(model_size, device="cpu", compute_type="int8")
+# criado antes da thread de transcrição, que chama overlay.acordar()
+overlay = Overlay()
 
 with pyaudio.PyAudio() as p:
     default_speakers = p.get_default_wasapi_loopback()
@@ -98,9 +102,8 @@ with pyaudio.PyAudio() as p:
                 )
 
     try:
-        while True:
-            time.sleep(0.2)
-    except KeyboardInterrupt:
+        # a janela ocupa a thread principal (armadilha 5); fecha com Ctrl+C ou botão direito
+        overlay.rodar()
         print("encerrando...")
     finally:
         stream.stop_stream(); stream.close()
