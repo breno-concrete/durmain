@@ -15,12 +15,12 @@ with pyaudio.PyAudio() as p:
             print(default_speakers)
 
             stream = p.open(
-                 format=data_format,
-                 channels=default_speakers["maxInputChannels"],
-                 rate= int(default_speakers["defaultSampleRate"]),
-                 input=True,
-                 input_device_index=int(default_speakers["index"]),
-                 frames_per_buffer=CHUNK      
+                format=data_format,
+                channels=default_speakers["maxInputChannels"],
+                rate= int(default_speakers["defaultSampleRate"]),
+                input=True,
+                input_device_index=int(default_speakers["index"]),
+                frames_per_buffer=CHUNK      
             )
 
             chunk = []
