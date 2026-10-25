@@ -40,3 +40,16 @@
 - Números medidos: roteiro com 20 "Breno" + 6 pegadinhas, mesma gravação nas duas rodadas. Sem hotwords: 15/20, 0 alarmes falsos. Com hotwords: 16/20, 0 alarmes falsos (5 pegadinhas observáveis; a 24 sumiu). Latência ~6,8 s.
 - Limitação conhecida: 3 das 4 falhas com hotwords foram frases que não chegaram ao detector (borda de bloco ou filtro de confiança), não erro de grafia.
 - Próximo passo: Marco 5 — prompt da ata e chamada ao Ollama.
+
+## 2026-10-25 — Marco 5
+- Feito: `live.py` salva o transcript em `output/transcript-AAAA-MM-DD-HHMM.txt` aos poucos (modo `"a"` + `flush()` a cada frase) e, no Ctrl+C, chama `src/minutes.py`, que manda o transcript + `prompts/minutes.txt` pro Ollama (`qwen2.5:7b`, temperatura 0.2, `num_ctx` 16384) e salva `output/ata-AAAA-MM-DD-HHMM.md`. A seção "Menções ao Breno" é montada no código com o `name_detector`, não pelo LLM. Aceite ok: aula pública de economia de 20+ min, 0 tarefas inventadas.
+- Travou em:
+  - Rodar de dentro de `src/` jogava `output/` e até o prompt em `src/output/` (que está no `.gitignore`). Solução: caminhos a partir de `Path(__file__)`.
+  - Prompt em 4+ rodadas. O 7B colocava introdução e bloco de código em volta da ata, escrevia "Nenhuma" no resumo, dava nota 10 com "não se aplica" no email, **copiou o exemplo do prompt como se fosse uma menção real**, juntava duas frases numa citação, e com exemplos de frases de tarefa passou a marcar tudo como tarefa. O que funcionou: template sem exemplo concreto, "na dúvida, não liste", citação de uma única linha, sem regras condicionais.
+  - O modelo achava que o Breno falava no transcript. Mas o loopback não pega o microfone: tudo é fala dos outros. Virou regra explícita no prompt.
+  - LLM listava só 6 de ~16 menções → menções saíram do LLM e foram pro código (determinístico).
+  - Ollama caiu com `HTTP 500` / `CUDA error: shared object initialization failed` ao carregar o modelo na GPU (RTX 3050 6 GB) logo depois da sessão. Na segunda tentativa funcionou. Como o transcript é salvo aos poucos, nada se perdeu.
+- Aprendi: o Ollama é uma API HTTP local (`POST /api/generate`); `num_ctx` padrão é pequeno e corta o transcript sem avisar; modelo pequeno copia exemplos e se perde com "se X então Y"; usar o LLM só onde ele é necessário.
+- Números medidos: aula de 20 min = 2.655 palavras = 5.091 tokens de entrada (acima do contexto padrão do Ollama); ata em 36 s na GPU. Roteiro dos "Breno": ata em ~23 s; 14 menções pelo detector contra 6 pelo LLM.
+- Limitação conhecida: o 7B ainda erra o rótulo (classifica decisões como tarefas, perde "o Bruno vai apresentar"); último bloco de ~5 s pode não entrar na ata se o Ctrl+C chegar durante a transcrição dele.
+- Próximo passo: Marco 6 — overlay do sloth.
