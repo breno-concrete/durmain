@@ -108,6 +108,11 @@ with pyaudio.PyAudio() as p:
 # o LLM só roda depois que a captura parou, nunca junto com a transcrição
 if caminho_transcript.stat().st_size > 0:
     print("gerando a ata...")
-    gerar_ata(caminho_transcript)
+    try:
+        gerar_ata(caminho_transcript)
+    except Exception as erro:
+        # o transcript já está salvo; dá para gerar a ata depois
+        print(f"falhou ao gerar a ata ({erro})")
+        print(f"rode: python src/minutes.py {caminho_transcript}")
 else:
     print("transcript vazio, sem ata")
