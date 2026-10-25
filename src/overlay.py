@@ -11,13 +11,16 @@ PASTA_ASSETS = RAIZ / "assets"
 COR_TRANSPARENTE = "#ff00ff"
 MARGEM = 20
 
-# quadros 01–04: sono e ronco; 05–12: despertar até a surpresa
+# quadros 01–04: sono e ronco; 05–12: despertar até a surpresa;
+# 13–16: pegar o caderninho; 17–20: anotar (traço, traço, piscadinha, pausa)
 SONO = [0, 1, 2, 3, 2, 1]
-DESPERTAR = list(range(4, 12))
+DESPERTAR = list(range(4, 12)) + list(range(12, 16))
+ANOTAR = [16, 17, 16, 17, 18, 16, 17, 19]
 VOLTAR = DESPERTAR[::-1]
 
 RONCO_MS = 500
 QUADRO_MS = 120
+ANOTAR_MS = 250
 ACORDADO_MS = 8000
 
 
@@ -36,7 +39,8 @@ class Overlay:
         self.label.pack()
         self.atual = 0
         self.acordado = False
-        self._job = None
+        self._job = None  # próximo quadro da animação
+        self._job_dormir = None  # timer dos 8 s acordado
 
         # canto inferior direito, acima da barra de tarefas
         largura, altura = self.quadros[0].width(), self.quadros[0].height()
@@ -77,18 +81,31 @@ class Overlay:
         self._job = self.root.after(RONCO_MS, self._roncar, passo + 1)
 
     def _acordar(self):
-        self._cancelar()
-        # se já estava acordado, só recomeça a contagem dos 8 s
+        # se já estava acordado, segue anotando e só recomeça a contagem dos 8 s
         if self.acordado:
-            self._agendar_dormir()
+            if self._job_dormir:
+                self._agendar_dormir()
             return
+        self._cancelar()
         self.acordado = True
-        self._animar(DESPERTAR, self._agendar_dormir)
+        self._animar(DESPERTAR, self._comecar_a_anotar)
+
+    def _comecar_a_anotar(self):
+        self._agendar_dormir()
+        self._anotar()
+
+    def _anotar(self, passo=0):
+        self._mostrar(ANOTAR[passo % len(ANOTAR)])
+        self._job = self.root.after(ANOTAR_MS, self._anotar, passo + 1)
 
     def _agendar_dormir(self):
-        self._job = self.root.after(ACORDADO_MS, self._voltar_a_dormir)
+        if self._job_dormir:
+            self.root.after_cancel(self._job_dormir)
+        self._job_dormir = self.root.after(ACORDADO_MS, self._voltar_a_dormir)
 
     def _voltar_a_dormir(self):
+        self._job_dormir = None
+        self._cancelar()
         self.acordado = False
         self._animar(VOLTAR, self._roncar)
 
