@@ -32,3 +32,11 @@
 - Números medidos: 38 blocos de 5 s com fala (~3 min de palestra pública do YouTube): processamento médio 1,68 s (mín 1,49, máx 2,33) → atraso máx médio 6,68 s, pior caso 7,33 s; fila sempre 0. Fator de tempo real em bloco de 5 s ≈ 0,34 (contra 0,15 com 30 s de uma vez — custo fixo por chamada). Silêncio: 0 frases inventadas.
 - Limitação conhecida: sem sobreposição entre blocos, palavras na borda são cortadas ("mochila p..." / "pronta") — cortado pelo prazo.
 - Próximo passo: Marco 4 — detectar o nome com rapidfuzz e imprimir alerta com as últimas 2–3 frases de contexto.
+
+## 2026-10-25 — Marco 4
+- Feito: `src/name_detector.py` com rapidfuzz (limiar 85, comparação palavra a palavra em minúsculo) e alerta no `live.py` com as últimas frases de contexto. `hotwords="Breno"` no transcribe. Aceite ok.
+- Travou em: o detector funcionava, mas o Whisper escrevia o nome errado ("Brenna", "Brena", "Bruno", "branco", "Brennan"). Baixar o limiar pra 80 pegaria "Bruno"/"Brena", mas faria as pegadinhas com "Bruno" virarem alarme falso.
+- Aprendi: o Whisper funciona como um autocomplete; com som ambíguo ele escolhe a palavra mais comum no treino. `hotwords` desempata a favor do nome sem mexer no detector. Risco: puxar outros nomes pra "Breno" ou inventar o nome no silêncio — não aconteceu no teste.
+- Números medidos: roteiro com 20 "Breno" + 6 pegadinhas, mesma gravação nas duas rodadas. Sem hotwords: 15/20, 0 alarmes falsos. Com hotwords: 16/20, 0 alarmes falsos (5 pegadinhas observáveis; a 24 sumiu). Latência ~6,8 s.
+- Limitação conhecida: 3 das 4 falhas com hotwords foram frases que não chegaram ao detector (borda de bloco ou filtro de confiança), não erro de grafia.
+- Próximo passo: Marco 5 — prompt da ata e chamada ao Ollama.
