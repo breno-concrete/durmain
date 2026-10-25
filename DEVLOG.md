@@ -20,3 +20,15 @@
 - Aprendi: `segments` é um generator (lazy, ≈ Stream do Java): o trabalho pesado só acontece dentro do `for`, então o cronômetro tem que parar depois dele. Medir carregamento do modelo separado da transcrição, porque o modelo carrega uma vez só. Passando o caminho do arquivo, o faster-whisper converte sozinho 48 kHz estéreo → 16 kHz mono (via PyAV); isso deixa de valer quando eu passar bytes da memória (Marco 3).
 - Números medidos: carregar modelo = 1,47 s; transcrever 30 s de áudio = 4,42 s → fator de tempo real ≈ 0,15 (~6,8× mais rápido que o áudio).
 - Próximo passo: Marco 3 — capturar em blocos de ~5 s e transcrever cada bloco enquanto o próximo é gravado (threads + fila), convertendo o áudio pra 16 kHz mono na mão.
+
+## 2026-10-24 — Marco 3
+- Feito: `src/live.py` grava o loopback em blocos de 5 s e transcreve cada bloco numa thread separada (fila entre as duas); `src/audio_convert.py` converte int16 48 kHz estéreo → float32 16 kHz mono (numpy). Filtro de alucinação por confiança (`no_speech_prob > 0.6` e `avg_logprob < -1`) + lista de frases fantasma. Aceite ok.
+- Travou em:
+  - `join`/`print` indentados dentro do `for` → imprimia o bloco crescendo a cada leitura.
+  - Passei a lista `chunk` pro `transcribe` em vez do array convertido, e não percorri os `segments` (generator) → nada era transcrito.
+  - Alucinação "Legendas pela comunidade de Amara.org" ao pausar o vídeo, mesmo com `vad_filter=True`.
+  - **WASAPI loopback não entrega frames quando nada está tocando**: o `stream.read()` bloqueia dentro do C e o Ctrl+C é ignorado. Mover o `read` pra outra thread fez o Ctrl+C funcionar, mas o `p.terminate()` com a thread ainda no `read` deu **segmentation fault**. Solução: modo callback (`stream_callback`) — o PortAudio chama a função quando tem áudio, ninguém fica preso e o stream fecha limpo.
+- Aprendi: produtor/consumidor com `queue.Queue` + `threading.Thread(daemon=True)` ≈ `BlockingQueue` + `Thread` do Java. Callback (listener) × read bloqueante (polling). `global` só é necessário pra reatribuir; `append`/`clear` modificam a lista sem ele. Python só trata Ctrl+C entre instruções Python, não dentro de código C.
+- Números medidos: 38 blocos de 5 s com fala (~3 min de palestra pública do YouTube): processamento médio 1,68 s (mín 1,49, máx 2,33) → atraso máx médio 6,68 s, pior caso 7,33 s; fila sempre 0. Fator de tempo real em bloco de 5 s ≈ 0,34 (contra 0,15 com 30 s de uma vez — custo fixo por chamada). Silêncio: 0 frases inventadas.
+- Limitação conhecida: sem sobreposição entre blocos, palavras na borda são cortadas ("mochila p..." / "pronta") — cortado pelo prazo.
+- Próximo passo: Marco 4 — detectar o nome com rapidfuzz e imprimir alerta com as últimas 2–3 frases de contexto.
