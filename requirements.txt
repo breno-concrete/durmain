@@ -1,0 +1,4 @@
+faster-whisper
+pyaudiowpatch
+rapidfuzz
+jiwer
