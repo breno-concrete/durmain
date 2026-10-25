@@ -2,3 +2,4 @@ faster-whisper
 pyaudiowpatch
 rapidfuzz
 jiwer
+av<19
