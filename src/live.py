@@ -24,7 +24,7 @@ def ao_receber_audio(in_data, frame_count, time_info, status):
     chunk.append(in_data)
     frames_no_bloco += frame_count
     if frames_no_bloco >= total_frames:
-        fila.put(b"".join(chunk))
+        fila.put((time.perf_counter(), b"".join(chunk)))
         chunk.clear()
         frames_no_bloco = 0
     return (None, pyaudio.paContinue)
@@ -39,12 +39,16 @@ def eh_alucinacao(segment):
 
 def transcrever(rate, channels):
     while True:
-        audio = fila.get()
+        fechou_em, audio = fila.get()
         audio_whisper = to_whisper_format(audio, rate, channels)
         segments, info = model.transcribe(audio_whisper, language="pt", vad_filter=True)
         for segment in segments:
             if not eh_alucinacao(segment):
                 print(segment.text)
+
+        # pior caso: fala no início do bloco esperou os 5 s do bloco + o processamento
+        processamento = time.perf_counter() - fechou_em
+        print(f"   [processou em {processamento:.2f} s | atraso máx {5 + processamento:.2f} s | fila {fila.qsize()}]")
 
 
 model = WhisperModel(model_size, device="cpu", compute_type="int8")
