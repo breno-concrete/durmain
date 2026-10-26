@@ -51,8 +51,8 @@ system audio ──► 5 s blocks ──► faster-whisper + VAD ──► trans
 ## Setup
 
 ```powershell
-git clone https://github.com/breno-concrete/slothnotes.git
-cd slothnotes
+git clone https://github.com/breno-concrete/durmain.git
+cd durmain
 
 python -m venv .venv
 .venv\Scripts\activate
