@@ -4,7 +4,7 @@ import time
 import urllib.request
 from pathlib import Path
 
-from name_detector import menciona_nome
+from name_detector import NAME, menciona_nome
 
 # raiz do projeto, para funcionar rodando de qualquer pasta
 RAIZ = Path(__file__).resolve().parent.parent
@@ -18,13 +18,13 @@ def secao_mencoes(transcript):
     # feito no código, não no LLM: o detector acha todas, o modelo esquecia metade
     linhas = [linha for linha in transcript.splitlines() if menciona_nome(linha)]
     itens = "\n".join(f'- "{linha}"' for linha in linhas) or "Nenhuma"
-    return f"## Menções ao Breno\n{itens}\n"
+    return f"## Menções ao {NAME}\n{itens}\n"
 
 
 def gerar_ata(caminho_transcript):
     caminho_transcript = Path(caminho_transcript)
     transcript = caminho_transcript.read_text(encoding="utf-8")
-    prompt = PROMPT.read_text(encoding="utf-8").replace("{transcript}", transcript)
+    prompt = PROMPT.read_text(encoding="utf-8").replace("{nome}", NAME).replace("{transcript}", transcript)
 
     corpo = {
         "model": MODELO,

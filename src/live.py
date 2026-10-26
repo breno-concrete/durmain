@@ -9,7 +9,7 @@ import pyaudiowpatch as pyaudio
 from audio_convert import to_whisper_format
 from faster_whisper import WhisperModel
 from minutes import gerar_ata
-from name_detector import menciona_nome
+from name_detector import NAME, menciona_nome
 from overlay import Overlay
 
 CHUNK = 1024
@@ -52,7 +52,7 @@ def transcrever(rate, channels):
     while True:
         fechou_em, audio = fila.get()
         audio_whisper = to_whisper_format(audio, rate, channels)
-        segments, info = model.transcribe(audio_whisper, language="pt", vad_filter=True, hotwords="Breno")
+        segments, info = model.transcribe(audio_whisper, language="pt", vad_filter=True, hotwords=NAME)
         for segment in segments:
             if not eh_alucinacao(segment):
                 print(segment.text)
