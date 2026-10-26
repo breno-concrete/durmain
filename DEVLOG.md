@@ -1,4 +1,4 @@
-# DEVLOG — SlothNotes
+# DEVLOG — Durmain
 
 ## 2026-10-23 — Marco 0
 - Feito: venv criado; faster-whisper, pyaudiowpatch, rapidfuzz e jiwer instalados via requirements.txt; ffmpeg 9.0.2 via winget; Ollama com qwen2.5:7b. Testes de aceite passaram.

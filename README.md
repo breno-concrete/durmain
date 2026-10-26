@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="docs/sloth_sleeping.png" width="160" alt="SlothNotes sleeping">
+  <img src="docs/sloth_sleeping.png" width="160" alt="Durmain sleeping">
   &nbsp;&nbsp;&nbsp;
-  <img src="docs/sloth_writing.png" width="160" alt="SlothNotes taking notes">
+  <img src="docs/sloth_writing.png" width="160" alt="Durmain taking notes">
 </p>
 
-<h1 align="center">SlothNotes</h1>
+<h1 align="center">Durmain</h1>
 
 <p align="center">
   A sloth that sleeps in the corner of your screen during calls and lectures,<br>
@@ -18,7 +18,7 @@
 
 Some meetings only need you for the thirty seconds when someone asks you something. The rest of the time you're half listening, and that's exactly when your name gets called.
 
-SlothNotes listens to your computer's audio, transcribes it locally, and stays asleep until your name comes up. Then it wakes up, shows what was just said, and starts taking notes. When the call ends, a local LLM turns the transcript into minutes: a summary, decisions, tasks, every time you were mentioned, and an honest score for "this could have been an email".
+Durmain listens to your computer's audio, transcribes it locally, and stays asleep until your name comes up. Then it wakes up, shows what was just said, and starts taking notes. When the call ends, a local LLM turns the transcript into minutes: a summary, decisions, tasks, every time you were mentioned, and an honest score for "this could have been an email".
 
 Meeting audio is other people's voices and other people's words. It shouldn't go to a third-party server just so you can get a summary, so it doesn't. The speech model and the LLM are both open, and both run offline.
 
