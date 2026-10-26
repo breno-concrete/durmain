@@ -53,3 +53,17 @@
 - Números medidos: aula de 20 min = 2.655 palavras = 5.091 tokens de entrada (acima do contexto padrão do Ollama); ata em 36 s na GPU. Roteiro dos "Breno": ata em ~23 s; 14 menções pelo detector contra 6 pelo LLM.
 - Limitação conhecida: o 7B ainda erra o rótulo (classifica decisões como tarefas, perde "o Bruno vai apresentar"); último bloco de ~5 s pode não entrar na ata se o Ctrl+C chegar durante a transcrição dele.
 - Próximo passo: Marco 6 — overlay do sloth.
+
+## 2026-10-25 — Marco 6
+- Feito: `src/overlay.py` — janela tkinter sem borda, sempre no topo, fundo magenta transparente (`-transparentcolor`), 20 quadros: ronco em loop (01–04), despertar (05–12), pegar o caderninho (13–16) e anotar em loop (17–20) por 8 s; arrastar com o botão esquerdo, fechar com o direito. `scripts/prepare_sprites.py` reduz a arte pra 140 px e troca o fundo "quase magenta" pelo `#FF00FF` exato. Ligado no `live.py`: a janela ocupa a thread principal e a thread do Whisper só deixa pedidos numa fila. Aceite ok: o sloth acordou numa call real.
+- Travou em: os sprites gerados por IA tinham fundo magenta com ruído, e o tkinter só deixa transparente a cor exata → script de limpeza. Com a animação de anotação, um timer só não bastava (renovar os 8 s parava a animação) → dois timers. O nome estava fixo em 3 lugares → `NAME` único em `name_detector.py`.
+- Aprendi: tkinter só pode ser tocado pela thread principal (≈ `SwingUtilities.invokeLater`); `after()` agenda sem travar a janela, `time.sleep` congela; Ctrl+C dentro do `mainloop()` precisa de `signal` + um `after()` periódico.
+- Próximo passo: Marco 7.
+
+## 2026-10-26 — Marco 7
+- Feito: call real com roteiro de reunião falsa (churrasco, 5 decisões + 5 tarefas + armadilhas); `eval/results.md`; README em inglês com licença MIT; repo renomeado para `durmain`; vídeo da demo gravado com o Wi-Fi desligado; post publicado: https://dev.to/breno-cardoso/i-dont-listen-to-meetings-anymore-my-sloth-does-39fg
+- Travou em: o Ollama não aparece como `python` nem `ollama` no Gerenciador de Tarefas quando roda o modelo (processo separado, `llama-server`) — o pico de RAM do LLM não foi medido. A Xbox Game Bar grava só uma janela; a demo foi gravada com a Ferramenta de Captura.
+- Aprendi: na call, o amigo tem que falar cada decisão e tarefa completa, porque a minha voz não entra no transcript. As falhas que sobraram são quase todas borda de bloco, não o detector nem o LLM.
+- Números medidos: nome 8/10 na call, 0 alarmes falsos; latência média 2,5 s (4 medições); ata 8/10 com 0 inventado; Python 583 MB de pico; CPU ~40–50% por 1–2 s a cada bloco, ~3% entre blocos; ata da call em 42 s (14 tokens/s na GPU).
+- Cortado pelo prazo: WER; sobreposição entre blocos.
+- Próximo passo (extras): sobreposição curta entre blocos; mostrar o contexto da menção no overlay; testar Gemma no lugar do Qwen.
