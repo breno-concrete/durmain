@@ -152,7 +152,7 @@ scripts/
 
 [faster-whisper](https://github.com/SYSTRAN/faster-whisper) · [Ollama](https://ollama.com) · [Qwen2.5](https://github.com/QwenLM/Qwen2.5) · [PyAudioWPatch](https://github.com/s0d3s/PyAudioWPatch) · [RapidFuzz](https://github.com/rapidfuzz/RapidFuzz)
 
-Built for the Hacktoberfest Open-Source AI Challenge, week 3: *Slow and Steady*.
+Built for the Hacktoberfest Open-Source AI Challenge, week 3: *Slow and Steady* Read the story behind it: [I don't listen to meetings anymore. My sloth does.](https://dev.to/breno-cardoso/i-dont-listen-to-meetings-anymore-my-sloth-does-39fg)
 
 ## License
 
