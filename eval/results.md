@@ -15,6 +15,8 @@ Whisper `small` on CPU (`int8`), `qwen2.5:7b` through Ollama (GPU, picked automa
 | Hallucinations in silence | Paused video / silence during live runs | 0 | **0** ✅ |
 | Offline | — | works | Not recorded on video yet |
 | Peak RAM (transcription) | Working set of the Python process | note | **583 MB** |
+| CPU (transcription) | Task Manager, i5-12450HX (8 cores / 12 threads) | note | One ~1–2 s spike per 5 s block, peaking at **~40–50%**; ~3% between blocks |
+| CPU (minutes) | Same | note | ~16%: the LLM runs on the GPU |
 | LLM speed | Ollama log, call minutes | note | 14 tokens/s, 42 s total (7.8 s model load) |
 | WER | — | < 20% | Not measured (cut for time) |
 

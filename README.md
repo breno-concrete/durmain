@@ -114,7 +114,7 @@ Measured on a laptop with 16 GB of RAM, an RTX 3050 (6 GB) and Whisper on CPU. F
 | Mentions in the minutes | 14/14 found by the detector, vs 6 when the LLM was asked to list them |
 | Transcription speed | A 5 s block takes ~1.7 s, so the queue never grows |
 | Hallucinations in silence | 0 invented sentences |
-| Peak RAM during transcription | 583 MB |
+| Resources during transcription | 583 MB of RAM; CPU spikes to ~40–50% for 1–2 s per block, ~3% in between |
 
 ## Known limitations
 
