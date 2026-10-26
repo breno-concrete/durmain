@@ -102,17 +102,19 @@ Transcription is set to Portuguese (`language="pt"`) and the prompt is written i
 
 ## Results
 
-Measured on a laptop with 16 GB of RAM, an RTX 3050 (6 GB) and Whisper on CPU. Details are in [`DEVLOG.md`](DEVLOG.md).
+Measured on a laptop with 16 GB of RAM, an RTX 3050 (6 GB) and Whisper on CPU. Full numbers and method in [`eval/results.md`](eval/results.md); the story behind them is in [`DEVLOG.md`](DEVLOG.md).
 
 | What | Result |
 |---|---|
-| Transcription speed | A 5 s block takes ~1.7 s to process, so the queue never grows |
-| Alert latency (worst case) | ~7 s from the name being said to the alert |
-| Name detection | **16/20** mentions caught, **0** false alarms on 6 decoy sentences ("Bruno", "Brenda", "treino"...) |
-| Effect of `hotwords` | 15/20 → 16/20, with no new false alarms |
-| Hallucinations in silence | 0 invented sentences |
-| Minutes for a 20-minute lecture | 5,091 input tokens, generated in ~36 s, 0 invented tasks |
+| Name detection, live call | **8/10** mentions caught, **0** false alarms ("Bruno", "Brenda", "treino") |
+| Name detection, scripted recording | **16/20**, 0 false alarms (15/20 before adding the `hotword`) |
+| Alert latency | **2.5 s** average on the live call, ~7 s worst case |
+| Minutes fidelity | **8/10** decisions and tasks captured, **0 invented** |
+| Minutes for a 20-minute lecture | 5,091 input tokens, ~36 s, 0 invented tasks |
 | Mentions in the minutes | 14/14 found by the detector, vs 6 when the LLM was asked to list them |
+| Transcription speed | A 5 s block takes ~1.7 s, so the queue never grows |
+| Hallucinations in silence | 0 invented sentences |
+| Peak RAM during transcription | 583 MB |
 
 ## Known limitations
 
